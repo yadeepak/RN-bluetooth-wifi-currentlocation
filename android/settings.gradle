@@ -1,4 +1,6 @@
 rootProject.name = 'checkconnections'
+include ':easy-bluetooth-le'
+project(':easy-bluetooth-le').projectDir = new File(rootProject.projectDir, '../node_modules/easy-bluetooth-le/android')
 include ':react-native-android-location-enabler'
 project(':react-native-android-location-enabler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-android-location-enabler/android')
 include ':react-native-ble-plx'

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import io.github.douglasjunior.ReactNativeEasyBluetooth.le.LowEnergyPackage;
 import com.heanoria.library.reactnative.locationenabler.RNAndroidLocationEnablerPackage;
 import com.polidea.reactnativeble.BlePackage;
 import com.reactlibrary.rnwifi.RNWifiPackage;

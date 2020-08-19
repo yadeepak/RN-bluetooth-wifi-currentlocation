@@ -11,6 +11,8 @@ import WifiManager from 'react-native-wifi-reborn';
 import {BleManager} from 'react-native-ble-plx';
 import GetLocation from 'react-native-get-location';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+import EasyBluetooth from 'easy-bluetooth-le';
+import BLE from 'react-native-ble-manager';
 
 const window = Dimensions.get('window');
 
@@ -95,10 +97,61 @@ export default class App extends Component {
       });
   };
   componentDidMount = async () => {
+    await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location permission is required for WiFi connections',
+        message:
+          'This app needs location permission as this is required  ' +
+          'to scan for wifi networks.',
+        buttonNegative: 'DENY',
+        buttonPositive: 'ALLOW',
+      },
+    );
     await RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
       interval: 10000,
       fastInterval: 5000,
     });
+    var config = {
+      uuidService: 'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+      uuidCharacteristic: 'bef8d6c9-9c21-4c9e-b632-bd58c1009f9f',
+      deviceName: 'Bluetooth Example Project',
+      bufferSize: 1024,
+      characterDelimiter: '\n',
+    };
+
+    EasyBluetooth.init(config)
+      .then(function (config) {
+        console.log('config done!');
+      })
+      .catch(function (ex) {
+        console.warn(ex);
+      });
+    EasyBluetooth.startScan()
+      .then(function (devices) {
+        console.log('all devices found:');
+        console.log(devices);
+      })
+      .catch(function (ex) {
+        console.warn(ex);
+      });
+    BLE.start({showAlert: false});
+    await this.scanBle();
+  };
+
+  scanBle = async () => {
+    await BLE.scan([], 15, false, {
+      numberOfMatches: 3,
+      matchMode: 1,
+      scanMode: 2,
+      reportDelay: 0,
+    });
+    console.log('Scan started');
+    setTimeout(function () {
+      BLE.getDiscoveredPeripherals([]).then((peripheralsArray) => {
+        console.log('Connected peripherals: ' + peripheralsArray);
+      });
+    }, 10000);
   };
   render() {
     const btnScanTitle = 'Scan Bluetooth ';
